@@ -1,0 +1,38 @@
+###########################################
+--> Rodar 'bundle install' para instalar as bibliotecas utilizadas.
+
+
+
+##################################################
+Passo 1: Definição de ganhador e perdedor
+Passo 2: Calculo de jogadas no lado da IA
+Passo 3: Conferência a cada jogada
+
+
+
+1: 
+Será realizado um cálculo para verificar as possibilidades de vitória, ou seja, 
+quando alguém completar 3 blocos seguidos em uma matriz 3x3.
+Quando houver um ganhador, bastará definir o lado oposto como perdedor.
+
+2:
+Será realizado um cálculo para verificar as jogadas possiveis.
+Dentro do array de jogadas possíveis, deverá haver as seguintes conferências:
+
+## a -> Array de jogadas que o player poderá fazer na sua vez
+b -> Array de jogadas que o player poderá fazer e que poderão fazê-lo ganhar 
+c -> Array de jogadas que a IA fará que ganharão o jogo.
+
+Se c > 0, pegar qualquer item do array de c, pois fará a IA ganhar o jogo.
+
+Se c == 0, então o jogo não está para acabar para a vitória do bot agora, então
+  > Se b > 0 e b < 2, então a próxima jogada do player será para a vitória, 
+    então a IA deverá escolher o único item no array de b.
+
+  Se b > 0 e b >= 2, então o player tem duas possibilidades de vitória, 
+    então resta para a IA escolher randomicamente uma das possibilidades em b.
+    
+    > Se o jogo não acabar, ou o player não escolheu uma de suas chances de vitória, 
+        ou suas chances eram uma intersecção e já foi escolhida pela IA no passo anterior.
+
+  Se b == 0, então o jogador não está prestes a ganhar, e o bot pode seguir num dos passo a passos pré-estabelecidos.
