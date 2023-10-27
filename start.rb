@@ -19,10 +19,7 @@ class Start < GameIntro
 
     draw_figure([])
 
-    first_player_step = get_step
-    valid_step = valid_step?(first_player_step)
-
-    valid_step ? continue_game : request_step_until_valid
+    continue_game
   end
 
   def continue_game
@@ -31,13 +28,27 @@ class Start < GameIntro
     until @end_game
       turn = check_turn
       empty_boxes = possibilities
+      bot_steps = 0
 
       if turn == 1
         # Vez do player
+
+        player_step = get_step
+        valid_step = valid_step?(first_player_step)
+
+        @boxes[step] = 1
       else
         # Vez do bot
-        step = bot_turn
-        break
+        step = bot_turn(empty_boxes, bot_steps)
+        win = will_step_get_a_win?(0, step)
+
+        @boxes[step] = 0
+
+        draw_figure(@boxes)
+
+        @end_game = true if win
+
+        bot_steps += 1
       end
     end
   end
@@ -63,36 +74,51 @@ class Start < GameIntro
     possibilities
   end
 
-  def bot_turn
-    will_step_get_a_win?(0, get_step) # teste
-    # return win_possibilities.first win_possibilities.count > 0 ?
+  def bot_turn(empty_boxes, bot_steps)
+    return empty_boxes.sample if bot_steps.zero? # Se for a primeira jogada do robô, então escolher aleatório.
 
-    # return opponent_win_possibilities.first if opponent_win_possibilities.count > 0
+    win_possibilities = win_possibilities(empty_boxes, 0)
+    opponent_win_possibilities = win_possibilities(empty_boxes, 1)
 
-    # Calcular
+    return win_possibilities.first if win_possibilities.count > 0
+
+    return opponent_win_possibilities.first if opponent_win_possibilities.count > 0
+
+    empty_boxes.sample
   end
 
-  def will_step_get_a_win?(turn, _step)
+  def win_possibilities(empty_boxes, turn)
+    response = []
+
+    empty_boxes.each do |empty_box|
+      result = will_step_get_a_win?(turn, empty_box)
+
+      next if result == false
+
+      response << empty_box
+    end
+
+    response
+  end
+
+  def will_step_get_a_win?(turn, step)
     # turn será sempre 0 ou 1
     simulated_boxes = @boxes
 
-    # simulated_boxes.each_with_index do |_box, index|
-    #   next unless index == step - 1
+    simulated_boxes.each_with_index do |_box, index|
+      next unless index == step - 1
 
-    #   simulated_boxes[index] = turn
-    # end
-    simulated_boxes[0] = turn
-    simulated_boxes[1] = turn
-    simulated_boxes[2] = turn
+      simulated_boxes[index] = turn
+    end
 
     situation = check_game_situation(turn, simulated_boxes)
 
-    puts situation[:game_win] # teste
+    puts situation # teste
 
     situation[:game_win]
   end
 
-  def check_game_situation(turn, boxes = 0)
+  def check_game_situation(turn, boxes = @boxes)
     sum = 0
     filled = 0
 
@@ -102,7 +128,7 @@ class Start < GameIntro
       sum += index
       filled += 1
     end
-    puts "somatório = #{sum}"
+
     return build_hash(turn, true, false) if (sum % 3 == 0) && (filled >= 3)
 
     build_hash(turn, false, false)
