@@ -23,8 +23,6 @@ class Start < GameIntro
   end
 
   def continue_game
-    @rounds += 1
-
     until @end_game
       turn = check_turn
       empty_boxes = possibilities
@@ -32,13 +30,31 @@ class Start < GameIntro
 
       if turn == 1
         # Vez do player
+        puts 'sua vez!'
+        puts 'digite um número de 1 a 9'
 
         player_step = get_step
-        valid_step = valid_step?(first_player_step)
+        valid_step = valid_step?(player_step, empty_boxes)
 
-        @boxes[step] = 1
+        if valid_step == false
+          player_step = request_step_until_valid
+        else
+          player_step -= 1
+        end
+
+        win = will_step_get_a_win?(1, player_step)
+
+        @boxes[player_step] = 1
+
+        draw_figure(@boxes)
+
+        @end_game = true if win
       else
         # Vez do bot
+        puts 'vez do oponente . . .'
+
+        sleep(2) # esperar 2 segundos antes de continuar (pra não printar tão rápido, e ficar mais natural)
+
         step = bot_turn(empty_boxes, bot_steps)
         win = will_step_get_a_win?(0, step)
 
@@ -50,6 +66,8 @@ class Start < GameIntro
 
         bot_steps += 1
       end
+
+      @rounds += 1
     end
   end
 
@@ -113,8 +131,6 @@ class Start < GameIntro
 
     situation = check_game_situation(turn, simulated_boxes)
 
-    puts situation # teste
-
     situation[:game_win]
   end
 
@@ -161,8 +177,10 @@ class Start < GameIntro
     valid_step - 1 # -1 pois os cálculos se baseiam nas caixas de 0 a 8, e não 1 a 9.
   end
 
-  def valid_step?(step)
+  def valid_step?(step, empty_boxes)
     return true if step.instance_of?(Integer) && (step >= 1) && (step <= 9)
+
+    empty_boxes.include?(step - 1)
 
     false
   end
