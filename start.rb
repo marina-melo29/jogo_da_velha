@@ -3,6 +3,12 @@
 # se par -> vez do player
 
 class Start < GameIntro
+  WINNING_COMBINATIONS = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], # Linhas horizontais
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], # Colunas verticais
+    [0, 4, 8], [2, 4, 6] # Diagonais
+  ]
+
   def initialize
     @y_positions = [0, 1, 2]
     @x_positions = [0, 1, 2]
@@ -109,6 +115,8 @@ class Start < GameIntro
   def win_possibilities(empty_boxes, turn)
     response = []
 
+    # empty_boxes serão as posições vazias (de 0 a 8)
+
     empty_boxes.each do |empty_box|
       result = will_step_get_a_win?(turn, empty_box)
 
@@ -120,35 +128,26 @@ class Start < GameIntro
     response
   end
 
-  def will_step_get_a_win?(turn, step)
-    # turn será sempre 0 ou 1
+  def will_step_get_a_win?(turn, chosen_step)
     simulated_boxes = @boxes.deep_dup
 
     simulated_boxes.each_with_index do |_box, index|
-      next unless index == step - 1
+      next unless index == chosen_step
 
       simulated_boxes[index] = turn
     end
 
-    situation = check_game_situation(turn, simulated_boxes)
-
-    situation[:game_win]
+    check_game_situation(turn, simulated_boxes)
   end
 
   def check_game_situation(turn, boxes = @boxes)
-    sum = 0
-    filled = 0
+    win = false
 
-    boxes.each_with_index do |box, index|
-      next unless box == turn
-
-      sum += index
-      filled += 1
+    WINNING_COMBINATIONS.each do |combo|
+      win = true if combo.all? { |position| boxes[position] == turn }
     end
 
-    return build_hash(turn, true, false) if (sum % 3 == 0) && (filled >= 3)
-
-    build_hash(turn, false, false)
+    win
   end
 
   def build_hash(turn, game_win, draw)
@@ -166,22 +165,24 @@ class Start < GameIntro
     until @valid_step
       puts 'Por Favor, digite um valor válido:'
 
-      step = get_step
+      chosen_step = get_step
       # Se o usuario digitar uma String, o to_i irá transformar em 0, e não passará na validação.
 
-      if valid_step?(step)
+      if valid_step?(chosen_step)
         @valid_step = true
-        valid_step = step
+        valid_step = chosen_step
       end
     end
 
     valid_step - 1 # -1 pois os cálculos se baseiam nas caixas de 0 a 8, e não 1 a 9.
   end
 
-  def valid_step?(step, empty_boxes)
-    return true if step.instance_of?(Integer) && (step >= 1) && (step <= 9)
+  def valid_step?(chosen_step, empty_boxes)
+    false if empty_boxes.include?(chosen_step - 1)
 
-    false if empty_boxes.include?(step - 1)
+    return true if chosen_step.instance_of?(Integer) && (chosen_step >= 1) && (chosen_step <= 9)
+
+    false
   end
 
   def get_step
