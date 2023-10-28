@@ -15,7 +15,7 @@ No terminal, digite:
 
 Para instalar o Ruby no Windows 10, você pode usar uma distribuição do Windows chamada "RubyInstaller":
 
-1 - Baixe o RubyInstaller: Vá para o site oficial do RubyInstaller para Windows (https://rubyinstaller.org/) e baixe a versão mais recente do RubyInstaller. Certifique-se de baixar a versão recomendada (não a versão "DevKit" a menos que você tenha necessidades específicas).
+1 - Baixe o RubyInstaller: Vá para o site oficial do RubyInstaller para Windows (https://rubyinstaller.org/) e baixe a versão mais recente do RubyInstaller. Certifique-se de baixar a versão recomendada.
 
 2 - Execute o instalador: Execute o arquivo baixado e siga as instruções do instalador.
 
