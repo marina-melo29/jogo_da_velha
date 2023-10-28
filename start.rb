@@ -181,9 +181,7 @@ class Start < GameIntro
   def valid_step?(step, empty_boxes)
     return true if step.instance_of?(Integer) && (step >= 1) && (step <= 9)
 
-    empty_boxes.include?(step - 1)
-
-    false
+    false if empty_boxes.include?(step - 1)
   end
 
   def get_step
