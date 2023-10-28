@@ -23,10 +23,11 @@ class Start < GameIntro
   end
 
   def continue_game
+    bot_steps = 0
+
     until @end_game
       turn = check_turn
       empty_boxes = possibilities
-      bot_steps = 0
 
       if turn == 1
         # Vez do player
@@ -121,7 +122,7 @@ class Start < GameIntro
 
   def will_step_get_a_win?(turn, step)
     # turn será sempre 0 ou 1
-    simulated_boxes = @boxes
+    simulated_boxes = @boxes.deep_dup
 
     simulated_boxes.each_with_index do |_box, index|
       next unless index == step - 1
