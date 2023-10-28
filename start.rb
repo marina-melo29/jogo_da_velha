@@ -56,10 +56,10 @@ class Start < GameIntro
 
         sleep(2) # esperar 2 segundos antes de continuar (pra não printar tão rápido, e ficar mais natural)
 
-        step = bot_turn(empty_boxes, bot_steps)
-        win = will_step_get_a_win?(0, step)
+        bot_step = bot_turn(empty_boxes, bot_steps)
+        win = will_step_get_a_win?(0, bot_step)
 
-        @boxes[step] = 0
+        @boxes[bot_step] = 0
 
         draw_figure(@boxes)
 
@@ -209,7 +209,7 @@ class Start < GameIntro
   end
 
   def validate_item(turn)
-    return '_' unless turn.present? && turn.instance_of?(Integer)
+    return '_' if turn.nil? || turn.negative?
 
     return 'x' if turn > 0
 
