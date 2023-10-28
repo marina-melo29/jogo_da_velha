@@ -1,6 +1,7 @@
 require 'byebug'
 require 'active_support'
 require 'active_support/core_ext/object/blank'
+require 'deep_cloneable'
 
 # load 'teste.rb'
 
