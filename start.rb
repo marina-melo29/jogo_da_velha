@@ -91,7 +91,7 @@ class Start < GameIntro
     possibilities = []
 
     @boxes.each_with_index do |box, index|
-      next if box > 0
+      next if box >= 0
 
       possibilities << index
     end
